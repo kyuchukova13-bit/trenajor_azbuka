@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Тренажор по ръкопис - Индивидуален</title>
+    <style>
+        @font-face {
+            font-family: 'BoyanMaga';
+            src: url('Boyan_Maga-Regular.ttf') format('truetype');
+        }
+        :root { --dark: #2c3e50; --blue: #3498db; --green: #2ecc71; --red: #e74c3c; --orange: #e67e22; --bg: #f0f4f8; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; background: var(--bg); overflow: hidden; touch-action: none; }
+
+        .font-loader { font-family: 'BoyanMaga'; position: absolute; opacity: 0; pointer-events: none; }
+
+        /* НАЧАЛЕН ЕКРАН - АЗБУКА */
+        #start-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; z-index: 3000; overflow-y: auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: var(--dark); font-size: 2.2rem; margin: 10px 0; border-bottom: 3px solid var(--blue); display: inline-block; padding-bottom: 5px; }
+        .header p { color: #555; font-size: 1.1rem; }
+        
+        .alphabet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); gap: 12px; width: 100%; max-width: 800px; margin: 0 auto; padding-bottom: 30px; }
+        .letter-card { 
+            background: white; border: 2px solid #dde1e5; border-radius: 15px; height: 75px; 
+            display: flex; align-items: center; justify-content: center; font-family: 'BoyanMaga'; 
+            font-size: 2rem; color: var(--dark); cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.1s, border-color 0.2s;
+        }
+        .letter-card:active { transform: scale(0.95); background: #f0f7ff; border-color: var(--blue); }
+
+        /* ЕКРАН ЗА ПИСАНЕ */
+        #app-screen { display: none; flex-direction: column; height: 100vh; background: var(--bg); }
+        .top-bar { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
+        .back-btn { background: #eee; border: none; padding: 10px 15px; border-radius: 10px; font-weight: bold; font-size: 1rem; color: #333; cursor: pointer; }
+        .current-letter-display { font-family: 'BoyanMaga'; font-size: 2rem; color: var(--blue); font-weight: bold; }
+        
+        .workspace { flex: 1; display: flex; flex-direction: column; padding: 15px; position: relative; }
+        .canvas-container { flex: 1; background: white; border-radius: 20px; border: 2px solid #ccc; position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.02); }
+        canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+
+        .bottom-bar { height: 80px; background: white; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 0 15px; border-top: 2px solid #ddd; }
+        .action-btn { flex: 1; max-width: 250px; height: 55px; border-radius: 15px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        .btn-check { background: var(--green); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); }
+        .btn-clear { background: var(--red); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
+
+        /* ЕКРАН С РЕЗУЛТАТ */
+        #result-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; padding: 20px; text-align: center; }
+        .score-circle { width: 180px; height: 180px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 4rem; font-weight: bold; color: white; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .result-msg { font-size: 1.5rem; color: #333; margin-bottom: 40px; font-weight: bold; }
+        .result-btns { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; }
+
+        /* Скрито платно за проверка */
+        #hidden-canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="font-loader">АаБбВв</div>
+
+<div id="start-screen">
+    <div class="header">
+        <h1>Азбучен Тренажор</h1>
+        <p>Избери буква, която искаш да упражниш</p>
+    </div>
+    <div class="alphabet-grid" id="alphabet-grid"></div>
+</div>
+
+<div id="app-screen">
+    <div class="top-bar">
+        <button class="back-btn" onclick="showAlphabet()">⬅ КЪМ АЗБУКАТА</button>
+        <div class="current-letter-display" id="top-letter">Аа</div>
+        <div style="width: 80px;"></div> </div>
+    <div class="workspace">
+        <div class="canvas-container">
+            <canvas id="main-canvas"></canvas>
+        </div>
+    </div>
+    <div class="bottom-bar">
+        <button class="action-btn btn-clear" onclick="drawScene()">ИЗЧИСТИ</button>
+        <button class="action-btn btn-check" onclick="checkScore()">ПРОВЕРИ</button>
+    </div>
+</div>
+
+<div id="result-overlay">
+    <h2 style="color: var(--dark); font-size: 2rem; margin-bottom: 30px;">Твоят резултат:</h2>
+    <div class="score-circle" id="score-display">0%</div>
+    <div class="result-msg" id="result-msg">Добра работа!</div>
+    <div class="result-btns">
+        <button class="action-btn" style="background: var(--blue);" onclick="retryLetter()">ОПИТАЙ ПАК</button>
+        <button class="action-btn" style="background: var(--orange);" onclick="showAlphabet()">ДРУГА БУКВА</button>
+    </div>
+</div>
+
+<canvas id="hidden-canvas"></canvas>
+
+<script>
+    const alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ".split('');
+    let currentLetter = 'А';
+    let isDrawing = false;
+    let hasDrawn = false;
+    
+    const canvas = document.getElementById('main-canvas');
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
+    const hCan = document.getElementById('hidden-canvas');
+    const hCtx = hCan.getContext('2d', {willReadFrequently: true});
+
+    // Инициализация на азбуката
+    function initAlphabet() {
+        const grid = document.getElementById('alphabet-grid');
+        alphabet.forEach(letter => {
+            const card = document.createElement('div');
+            card.className = 'letter-card';
+            card.innerText = letter;
+            card.onclick = () => selectLetter(letter);
+            grid.appendChild(card);
+        });
+    }
+
+    function showAlphabet() {
+        document.getElementById('app-screen').style.display = 'none';
+        document.getElementById('result-overlay').style.display = 'none';
+        document.getElementById('start-screen').style.display = 'flex';
+    }
+
+    function selectLetter(letter) {
+        currentLetter = letter;
+        document.getElementById('top-letter').innerText = letter + letter.toLowerCase();
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'flex';
+        // Малко забавяне, за да се рендира контейнерът преди оразмеряване
+        setTimeout(drawScene, 50); 
+    }
+
+    function retryLetter() {
+        document.getElementById('result-overlay').style.display = 'none';
+        drawScene();
+    }
+
+    function drawScene() {
+        hasDrawn = false;
+        
+        // Динамично оразмеряване според екрана на устройството
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        
+        const w = canvas.width;
+        const h = canvas.height;
+        const mid = h / 2;
+        
+        // Адаптивна височина на реда (макс 90px, или 1/5 от екрана)
+        const rowH = Math.min(90, h / 4.5); 
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Фин светлосин тесен ред
+        ctx.fillStyle = "rgba(116, 185, 255, 0.08)";
+        ctx.fillRect(0, mid - rowH/2, w, rowH);
+
+        // Линиатура
+        ctx.strokeStyle = "#74b9ff"; 
+        ctx.lineWidth = 2.5;
+        [mid - rowH*1.5, mid - rowH/2, mid + rowH/2, mid + rowH*1.5].forEach(y => {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        });
+
+        // Шаблон на буквата
+        ctx.textAlign = "center"; 
+        ctx.textBaseline = "alphabetic";
+        const baseLine = mid + rowH/2;
+
+        // Главна буква
+        ctx.font = (rowH * 2.0) + "px 'BoyanMaga'";
+        ctx.fillStyle = "#f4f6f8"; // Много светло сиво
+        ctx.fillText(currentLetter, w/2 - rowH*1.2, baseLine - 3);
+        ctx.strokeStyle = "#a5b1c2"; 
+        ctx.lineWidth = 2; 
+        ctx.setLineDash([8, 5]);
+        ctx.strokeText(currentLetter, w/2 - rowH*1.2, baseLine - 3);
+
+        // Малка буква (ако не е Ь, който няма главна в началото, но тук го изписваме като малка)
+        let smallLetter = currentLetter.toLowerCase();
+        ctx.font = (rowH * 1.5) + "px 'BoyanMaga'";
+        ctx.fillText(smallLetter, w/2 + rowH*1.2, baseLine - 3);
+        ctx.strokeText(smallLetter, w/2 + rowH*1.2, baseLine - 3);
+        ctx.setLineDash([]);
+
+        drawHiddenTarget(w, h, mid, rowH, baseLine);
+    }
+
+    function drawHiddenTarget(w, h, mid, rowH, baseLine) {
+        hCan.width = w; 
+        hCan.height = h;
+        hCtx.clearRect(0, 0, w, h);
+        hCtx.textAlign = "center"; 
+        hCtx.textBaseline = "alphabetic";
+        hCtx.lineJoin = "round"; 
+        hCtx.lineCap = "round";
+        
+        // Дебела невидима зона за оценка (черна)
+        hCtx.lineWidth = 30; 
+        hCtx.strokeStyle = "#000000"; 
+        
+        hCtx.font = (rowH * 2.0) + "px 'BoyanMaga'";
+        hCtx.strokeText(currentLetter, w/2 - rowH*1.2, baseLine - 3);
+        
+        hCtx.font = (rowH * 1.5) + "px 'BoyanMaga'";
+        hCtx.strokeText(currentLetter.toLowerCase(), w/2 + rowH*1.2, baseLine - 3);
+    }
+
+    function checkScore() {
+        if (!hasDrawn) {
+            alert("Първо напиши буквата!");
+            return;
+        }
+
+        const uData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const tData = hCtx.getImageData(0, 0, hCan.width, hCan.height).data;
+
+        let targetPx = 0, hits = 0, misses = 0;
+
+        for (let i = 0; i < uData.length; i += 4) {
+            // Разпознаваме тъмносиния химикал
+            const isUser = uData[i+3] > 50 && uData[i] < 100 && uData[i+1] < 120 && uData[i+2] > 50;
+            const isTarget = tData[i+3] > 100;
+
+            if (isTarget) targetPx++;
+            if (isUser) { if (isTarget) hits++; else misses++; }
+        }
+
+        let finalScore = 0;
+        if (targetPx > 0) {
+            let maxExpected = targetPx * 0.35; // Коефициент на покритие, тъй като химикалът е по-тънък от маската
+            let coverage = (hits / maxExpected) * 100;
+            let penalty = (misses / maxExpected) * 130; 
+            
+            finalScore = Math.round(coverage - penalty);
+            if (finalScore > 99) finalScore = 99;
+            if (finalScore < 5) finalScore = 5;
+        }
+
+        showResult(finalScore);
+    }
+
+    function showResult(score) {
+        const overlay = document.getElementById('result-overlay');
+        const display = document.getElementById('score-display');
+        const msg = document.getElementById('result-msg');
+
+        display.innerText = score + "%";
+
+        if (score >= 85) {
+            display.style.background = "var(--green)";
+            msg.innerText = "Перфектно! Ти си истински майстор! 🌟";
+            msg.style.color = "var(--green)";
+        } else if (score >= 60) {
+            display.style.background = "var(--orange)";
+            msg.innerText = "Много добре, но можеш и по-добре! 👍";
+            msg.style.color = "var(--orange)";
+        } else {
+            display.style.background = "var(--red)";
+            msg.innerText = "Опитай да следваш пунктира по-внимателно! ✏️";
+            msg.style.color = "var(--red)";
+        }
+
+        overlay.style.display = 'flex';
+    }
+
+    // ЛОГИКА ЗА РИСУВАНЕ (ТЪЧ И МИШКА)
+    const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        return { 
+            x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left, 
+            y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top 
+        };
+    };
+
+    const startDraw = (e) => {
+        isDrawing = true; 
+        hasDrawn = true; 
+        const p = getPos(e); 
+        ctx.beginPath(); 
+        ctx.moveTo(p.x, p.y);
+    };
+
+    const moveDraw = (e) => {
+        if (!isDrawing) return;
+        const p = getPos(e);
+        ctx.lineTo(p.x, p.y); 
+        ctx.strokeStyle = "#2c3e50"; // Цвят на химикала
+        ctx.lineWidth = 10; // Дебелина на линията
+        ctx.lineCap = "round"; 
+        ctx.stroke();
+    };
+
+    const stopDraw = () => { isDrawing = false; };
+
+    // Събития за мишка
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    window.addEventListener('mouseup', stopDraw);
+
+    // Събития за тъч екрани (Телефони/Таблети)
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, {passive: false});
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); moveDraw(e); }, {passive: false});
+    window.addEventListener('touchend', stopDraw);
+
+    // Преоразмеряване при завъртане на екрана
+    window.addEventListener('resize', () => {
+        if (document.getElementById('app-screen').style.display === 'flex') {
+            drawScene();
+        }
+    });
+
+    // Стартиране
+    initAlphabet();
+
+</script>
+</body>
+</html>
