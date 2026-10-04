@@ -11,7 +11,7 @@
         }
         :root { --dark: #2c3e50; --blue: #3498db; --green: #2ecc71; --red: #e74c3c; --orange: #e67e22; --bg: #f0f4f8; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; background: var(--bg); overflow: hidden; touch-action: none; }
+        body, html { margin: 0; padding: 0; height: 100vh; height: 100dvh; font-family: 'Segoe UI', sans-serif; background: var(--bg); overflow: hidden; touch-action: none; }
 
         #start-screen { 
             position: fixed; inset: 0; background: #112233;
@@ -32,17 +32,65 @@
         }
         .letter-card:hover { background: #34495e; border-color: var(--blue); transform: scale(0.95); }
 
-        #app-screen { display: none; flex-direction: column; height: 100vh; background: var(--bg); }
-        .top-bar { height: 60px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #ddd; z-index: 10; }
+        /* Фиксиран основен екран за гарантиране, че бутоните винаги са напълно видими */
+        #app-screen { 
+            display: none; 
+            flex-direction: column; 
+            height: 100vh; 
+            height: 100dvh; 
+            width: 100vw; 
+            background: var(--bg); 
+            overflow: hidden; 
+        }
+        .top-bar { 
+            height: 60px; 
+            min-height: 60px; 
+            flex-shrink: 0; 
+            background: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 15px; 
+            border-bottom: 2px solid #ddd; 
+            z-index: 10; 
+        }
         .back-btn { background: #eee; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
         .current-letter-display { font-family: 'BoyanMaga'; font-size: 2rem; color: var(--blue); }
         
-        .workspace { flex: 1; display: flex; flex-direction: column; padding: 15px; position: relative; }
-        .canvas-container { flex: 1; background: white; border-radius: 20px; border: 2px solid #ccc; position: relative; overflow: hidden; }
+        .workspace { 
+            flex: 1; 
+            min-height: 0; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 10px 15px; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .canvas-container { 
+            flex: 1; 
+            min-height: 0; 
+            background: white; 
+            border-radius: 20px; 
+            border: 2px solid #ccc; 
+            position: relative; 
+            overflow: hidden; 
+        }
         canvas { width: 100%; height: 100%; display: block; touch-action: none; }
 
-        .bottom-bar { height: 80px; background: white; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 0 15px; border-top: 2px solid #ddd; }
-        .action-btn { flex: 1; max-width: 250px; height: 55px; border-radius: 15px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; color: white; text-transform: uppercase; }
+        .bottom-bar { 
+            height: 75px; 
+            min-height: 75px; 
+            flex-shrink: 0; 
+            background: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px; 
+            padding: 10px 15px; 
+            border-top: 2px solid #ddd; 
+            z-index: 10; 
+        }
+        .action-btn { flex: 1; max-width: 250px; height: 50px; border-radius: 15px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; color: white; text-transform: uppercase; }
         .btn-check { background: var(--green); }
         .btn-clear { background: var(--red); }
 
@@ -60,7 +108,10 @@
         <p class="brand-text">Образователни решения</p>
         
         <div style="margin-top: 40px; color: white; width: 100%; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px;">
-            <p style="margin: 0 0 10px 0; font-size: 0.9rem;">СТРОГОСТ НА ОЦЕНЯВАНЕ:</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.9rem;">СТРОГОСТ НА ОЦЕНЯВАНЕ:</span>
+                <span id="strictness-value" style="font-weight: bold; color: var(--blue);">5 / 10</span>
+            </div>
             <input type="range" id="strictness" min="1" max="10" value="5" style="width: 100%;">
             <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #bdc3c7; margin-top: 5px;">
                 <span>ПО-ЛЕКО</span>
@@ -100,7 +151,344 @@
 <canvas id="hidden-canvas"></canvas>
 
 <script>
-    const _0x2c4436=_0x57d8;(function(_0x292f6a,_0x3e9200){const _0x5111b5=_0x57d8,_0x584217=_0x292f6a();while(!![]){try{const _0x2ca54e=-parseInt(_0x5111b5(0xc4))/0x1*(parseInt(_0x5111b5(0xe2))/0x2)+parseInt(_0x5111b5(0xf4))/0x3+-parseInt(_0x5111b5(0x107))/0x4*(-parseInt(_0x5111b5(0xd1))/0x5)+parseInt(_0x5111b5(0x11e))/0x6*(-parseInt(_0x5111b5(0xe3))/0x7)+-parseInt(_0x5111b5(0x121))/0x8+-parseInt(_0x5111b5(0xdf))/0x9+parseInt(_0x5111b5(0xf0))/0xa;if(_0x2ca54e===_0x3e9200)break;else _0x584217['push'](_0x584217['shift']());}catch(_0x530c20){_0x584217['push'](_0x584217['shift']());}}}(_0x3d8f,0x439c8));const alphabet=_0x2c4436(0x111)['split']('');function _0x3d8f(){const _0xcda4a7=['onclick','strokeText','height','moveTo','688689dDtJWO','var(--red)','releasePointerCapture','148fFCxgr','180502jhtDFs','div','toLowerCase','start-screen','rgba(0,\x200,\x200,\x201)','middle','Добра\x20работа!\x20Опитай\x20пак\x20за\x20пълен\x20успех!\x20💪','Браво!\x20Отлично\x20справяне!\x20✨','display','pointerdown','getImageData','white','font','7240320ypGZpQ','beginPath','alphabet-grid','getElementById','863808XHwqYa','max','none','#f4f6f8','hypot','width','lineTo','main-canvas','top-letter','background','clientWidth','result-overlay','preventDefault','fillStyle','lineWidth','pointerId','px\x20\x27BoyanMaga\x27','stroke','cap','296SLMVgF','var(--orange)','textBaseline','innerText','map','clearRect','length','flex','low','app-screen','АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ','fill','#2c3e50','#a5b1c2','top','setPointerCapture','var(--green)','ЗАПОЧНИ\x20ОТ\x20ТОЧКА\x20','alphabetic','parentElement','forEach','createElement','#74b9ff','96eHyXIQ','fillText','round','2579608bOCVBU','hidden-canvas','min','setLineDash','lineCap','5452MJuAYU','pointerup','className','innerHTML','center','pointercancel','score-display','querySelector','getBoundingClientRect','textAlign','appendChild','data','letter-card','32430rMhzeq','getContext','pointermove','style','addEventListener','lineJoin','left','#2ecc71','orange','strokeStyle'];_0x3d8f=function(){return _0xcda4a7;};return _0x3d8f();}let currentLetter='А',isDrawing=![],hasDrawn=![],currentPointIndex=0x0;const canvas=document[_0x2c4436(0xf3)](_0x2c4436(0xfb)),ctx=canvas[_0x2c4436(0xd2)]('2d',{'willReadFrequently':!![]}),hCan=document['getElementById'](_0x2c4436(0x122)),hCtx=hCan[_0x2c4436(0xd2)]('2d',{'willReadFrequently':!![]}),letterConfig={'А':{'cap':[{'x':-0x5e,'y':-0xb},{'x':-0x24,'y':-0x60}],'low':[{'x':0x6,'y':-0x3e}]},'Б':{'cap':[{'x':0x10,'y':-0x9c},{'x':-0x6,'y':-0x5c},{'x':-0x28,'y':-0x7d}],'low':[{'x':0xb,'y':-0x44}]},'В':{'cap':[{'x':0x10,'y':-0xa8},{'x':-0x1f,'y':-0x7d}],'low':[{'x':-0x18,'y':-0x27}]},'Г':{'cap':[{'x':0x18,'y':-0xa7},{'x':-0x1e,'y':-0x7a}],'low':[{'x':-0x1b,'y':-0x27}]},'Д':{'cap':[{'x':0x18,'y':-0xa8}],'low':[{'x':0xb,'y':-0x3e}]},'Е':{'cap':[{'x':0x34,'y':-0xad}],'low':[{'x':-0x1f,'y':-0x21}]},'Ж':{'cap':[{'x':-0x60,'y':-0x88},{'x':-0x26,'y':-0x55},{'x':0x76,'y':-0xaf}],'low':[{'x':-0x3f,'y':-0x2c},{'x':-0x14,'y':-0x25},{'x':0x2c,'y':-0x3e}]},'З':{'cap':[{'x':-0x1c,'y':-0xad}],'low':[{'x':-0x21,'y':-0x28}]},'И':{'cap':[{'x':-0x4d,'y':-0x80},{'x':0x40,'y':-0xc4}],'low':[{'x':-0x2b,'y':-0x29},{'x':0x12,'y':-0x4c}]},'Й':{'cap':[{'x':-0x4d,'y':-0x80},{'x':0x40,'y':-0xc4},{'x':-0x9,'y':-0xd2}],'low':[{'x':-0x2b,'y':-0x29},{'x':0x12,'y':-0x4c},{'x':-0xe,'y':-0x5b}]},'К':{'cap':[{'x':-0x49,'y':-0xb0},{'x':0x5c,'y':-0xbc}],'low':[{'x':-0x28,'y':-0x2b},{'x':-0x6,'y':-0x20}]},'Л':{'cap':[{'x':-0x49,'y':-0x34}],'low':[{'x':-0x27,'y':-0x26}]},'М':{'cap':[{'x':-0x68,'y':-0x30}],'low':[{'x':-0x29,'y':-0x22}]},'Н':{'cap':[{'x':-0x48,'y':-0xb4},{'x':-0xa,'y':-0x6d},{'x':0x4e,'y':-0xc7}],'low':[{'x':-0x2a,'y':-0x28},{'x':-0xe,'y':-0x2b},{'x':0x13,'y':-0x49}]},'О':{'cap':[{'x':0xa,'y':-0xc1}],'low':[{'x':0x8,'y':-0x4b}]},'П':{'cap':[{'x':-0x4,'y':-0xa0},{'x':0x41,'y':-0xa0},{'x':-0x36,'y':-0x7c}],'low':[{'x':-0x20,'y':-0x29},{'x':-0xb,'y':-0x2a}]},'Р':{'cap':[{'x':0x14,'y':-0xa8},{'x':0x2-0x17,'y':-0x6a}],'low':[{'x':-0x2a,'y':-0x2b},{'x':-0x16,'y':-0x27}]},'С':{'cap':[{'x':0x1c,'y':-0x8c}],'low':[{'x':0x9,'y':-0x3d}]},'Т':{'cap':[{'x':-0x16,'y':-0xa2},{'x':0x21,'y':-0xa0},{'x':0x58,'y':-0xa4},{'x':-0x46,'y':-0x7c}],'low':[{'x':-0x38,'y':-0x26},{'x':-0x1c,'y':-0x28},{'x':0xc,'y':-0x2a}]},'У':{'cap':[{'x':-0x3f,'y':-0x7a}],'low':[{'x':-0x2a,'y':-0x2c}]},'Ф':{'cap':[{'x':-0x2d,'y':-0xe4},{'x':0xd,'y':-0xbf}],'low':[{'x':0x18,'y':-0x9f},{'x':0xc,'y':-0x44}]},'Х':{'cap':[{'x':-0x3e,'y':-0x81},{'x':0x5b,'y':-0xac}],'low':[{'x':-0x2c,'y':-0x2c},{'x':0x18,'y':-0x3e}]},'Ц':{'cap':[{'x':-0x5a,'y':-0x7d}],'low':[{'x':-0x32,'y':-42.3}]},'Ч':{'cap':[{'x':-0x49,'y':-0x79}],'low':[{'x':-0x24,'y':-0x26}]},'Ш':{'cap':[{'x':-0x74,'y':-0x7d}],'low':[{'x':-0x3a,'y':-0x2b}]},'Щ':{'cap':[{'x':-0x77,'y':-0x80}],'low':[{'x':-0x38,'y':-0x2d}]},'Ъ':{'cap':[{'x':0x1-0x49,'y':-0xb4}],'low':[{'x':-0x24,'y':-0x2a}]},'Ь':{'cap':[{'x':-0x11,'y':-0xc6}],'low':[{'x':-0x18,'y':-0x2b}]},'Ю':{'cap':[{'x':-0x4e,'y':-0xac},{'x':-0x23,'y':-0x6c},{'x':0x40,'y':-0xb0}],'low':[{'x':-0x2b,'y':-0x3e},{'x':-0xf,'y':-0x27},{'x':0x1c,'y':-0x44}]},'Я':{'cap':[{'x':-0x4a,'y':-0x2e}],'low':[{'x':-0x24,'y':-0x1f}]}};function _0x57d8(_0x5c43bc,_0x294cb0){_0x5c43bc=_0x5c43bc-0xc4;const _0x3d8ff2=_0x3d8f();let _0x57d883=_0x3d8ff2[_0x5c43bc];return _0x57d883;}function initAlphabet(){const _0x7cc855=_0x2c4436,_0x377ea1=document[_0x7cc855(0xf3)](_0x7cc855(0xf2));_0x377ea1[_0x7cc855(0xc7)]='',alphabet[_0x7cc855(0x11b)](_0x31a431=>{const _0x9d8a7a=_0x7cc855,_0x145948=document[_0x9d8a7a(0x11c)](_0x9d8a7a(0xe4));_0x145948[_0x9d8a7a(0xc6)]=_0x9d8a7a(0xd0),_0x145948[_0x9d8a7a(0x10a)]=_0x31a431,_0x145948[_0x9d8a7a(0xdb)]=()=>selectLetter(_0x31a431),_0x377ea1[_0x9d8a7a(0xce)](_0x145948);});}function selectLetter(_0x49f7af){const _0x2c33ec=_0x2c4436;currentLetter=_0x49f7af,document['getElementById'](_0x2c33ec(0xfc))[_0x2c33ec(0x10a)]=_0x49f7af+_0x49f7af[_0x2c33ec(0xe5)](),document[_0x2c33ec(0xf3)](_0x2c33ec(0xe6))[_0x2c33ec(0xd4)][_0x2c33ec(0xeb)]=_0x2c33ec(0xf6),document[_0x2c33ec(0xf3)](_0x2c33ec(0x110))[_0x2c33ec(0xd4)][_0x2c33ec(0xeb)]=_0x2c33ec(0x10e),setTimeout(drawScene,0x64);}function showAlphabet(){const _0x4eaf31=_0x2c4436;document[_0x4eaf31(0xf3)]('app-screen')[_0x4eaf31(0xd4)][_0x4eaf31(0xeb)]=_0x4eaf31(0xf6),document[_0x4eaf31(0xf3)](_0x4eaf31(0xff))[_0x4eaf31(0xd4)]['display']=_0x4eaf31(0xf6),document['getElementById'](_0x4eaf31(0xe6))[_0x4eaf31(0xd4)]['display']=_0x4eaf31(0x10e);}function drawScene(){const _0x3e9b50=_0x2c4436;hasDrawn=![],currentPointIndex=0x0,canvas['width']=canvas[_0x3e9b50(0x11a)][_0x3e9b50(0xfe)],canvas[_0x3e9b50(0xdd)]=canvas[_0x3e9b50(0x11a)]['clientHeight'];const _0x4985c9=canvas[_0x3e9b50(0xf9)],_0x5aa040=canvas[_0x3e9b50(0xdd)],_0x25c1b0=_0x5aa040/0x2,_0x550a89=Math['min'](0x5a,_0x5aa040/4.5),_0x434040=_0x25c1b0+_0x550a89/0x2;ctx['clearRect'](0x0,0x0,_0x4985c9,_0x5aa040),ctx['strokeStyle']=_0x3e9b50(0x11d),ctx[_0x3e9b50(0x102)]=0x2,[_0x25c1b0-_0x550a89*1.5,_0x25c1b0-_0x550a89/0x2,_0x25c1b0+_0x550a89/0x2,_0x25c1b0+_0x550a89*1.5][_0x3e9b50(0x11b)](_0x38798a=>{const _0xd404b0=_0x3e9b50;ctx['beginPath'](),ctx['moveTo'](0x0,_0x38798a),ctx[_0xd404b0(0xfa)](_0x4985c9,_0x38798a),ctx[_0xd404b0(0x105)]();});const _0x49583e=(_0x3cbe07,_0x4ec8ce,_0xedd6d)=>{const _0x15f486=_0x3e9b50;ctx[_0x15f486(0xef)]=_0xedd6d+_0x15f486(0x104),ctx[_0x15f486(0x101)]=_0x15f486(0xf7),ctx['textAlign']='center',ctx[_0x15f486(0x109)]='alphabetic',ctx[_0x15f486(0x11f)](_0x3cbe07,_0x4ec8ce,_0x434040-0x3),ctx[_0x15f486(0xda)]=_0x15f486(0x114),ctx[_0x15f486(0x124)]([0x8,0x5]),ctx[_0x15f486(0xdc)](_0x3cbe07,_0x4ec8ce,_0x434040-0x3),ctx['setLineDash']([]);};_0x49583e(currentLetter,_0x4985c9/0x2-_0x550a89*1.2,_0x550a89*0x2),_0x49583e(currentLetter[_0x3e9b50(0xe5)](),_0x4985c9/0x2+_0x550a89*1.2,_0x550a89*1.5),renderPoints(),drawHiddenTarget(_0x4985c9,_0x5aa040,_0x550a89,_0x434040);}function renderPoints(){const _0x58bba2=_0x2c4436,_0x23960a=canvas[_0x58bba2(0xdd)],_0x170b8c=Math[_0x58bba2(0x123)](0x5a,_0x23960a/4.5),_0x2d5d5d=_0x23960a/0x2+_0x170b8c/0x2,_0x456456=letterConfig[currentLetter];if(!_0x456456)return;const _0xe6c2d=(_0x31872d,_0x326ba2,_0x241866)=>{_0x31872d?.['forEach']((_0x4eb591,_0x3a79e9)=>{const _0x4f8a1d=_0x57d8,_0x45e382=_0x3a79e9+_0x241866;ctx[_0x4f8a1d(0x101)]=_0x45e382<currentPointIndex?_0x4f8a1d(0xd8):_0x4f8a1d(0xd9),ctx[_0x4f8a1d(0xf1)](),ctx['arc'](_0x326ba2+_0x4eb591['x'],_0x2d5d5d+_0x4eb591['y'],0xc,0x0,Math['PI']*0x2),ctx[_0x4f8a1d(0x112)](),ctx[_0x4f8a1d(0x101)]=_0x4f8a1d(0xee),ctx['font']='bold\x2012px\x20Arial',ctx[_0x4f8a1d(0xcd)]=_0x4f8a1d(0xc8),ctx['textBaseline']=_0x4f8a1d(0xe8),ctx[_0x4f8a1d(0x11f)](_0x3a79e9+0x1,_0x326ba2+_0x4eb591['x'],_0x2d5d5d+_0x4eb591['y']);});},_0x38fe87=letterConfig[currentLetter][_0x58bba2(0x106)]?letterConfig[currentLetter]['cap'][_0x58bba2(0x10d)]:0x0;_0xe6c2d(_0x456456[_0x58bba2(0x106)],canvas[_0x58bba2(0xf9)]/0x2-_0x170b8c*1.2,0x0),_0xe6c2d(_0x456456[_0x58bba2(0x10f)],canvas[_0x58bba2(0xf9)]/0x2+_0x170b8c*1.2,_0x38fe87);}function drawHiddenTarget(_0x464b10,_0x5518c3,_0x165350,_0x3c6dd0){const _0x28a679=_0x2c4436;hCan['width']=_0x464b10,hCan[_0x28a679(0xdd)]=_0x5518c3,hCtx[_0x28a679(0x10c)](0x0,0x0,_0x464b10,_0x5518c3),hCtx['textAlign']=_0x28a679(0xc8),hCtx['textBaseline']=_0x28a679(0x119),hCtx[_0x28a679(0x102)]=0x23,hCtx[_0x28a679(0xda)]=_0x28a679(0xe7),hCtx[_0x28a679(0x125)]=_0x28a679(0x120),hCtx['lineJoin']=_0x28a679(0x120),hCtx[_0x28a679(0xef)]=_0x165350*0x2+_0x28a679(0x104),hCtx[_0x28a679(0xdc)](currentLetter,_0x464b10/0x2-_0x165350*1.2,_0x3c6dd0-0x3),hCtx[_0x28a679(0xef)]=_0x165350*1.5+_0x28a679(0x104),hCtx[_0x28a679(0xdc)](currentLetter[_0x28a679(0xe5)](),_0x464b10/0x2+_0x165350*1.2,_0x3c6dd0-0x3);}const getPos=_0x47dc9b=>{const _0x5290cb=_0x2c4436,_0x27fe64=canvas[_0x5290cb(0xcc)]();return{'x':_0x47dc9b['clientX']-_0x27fe64[_0x5290cb(0xd7)],'y':_0x47dc9b['clientY']-_0x27fe64[_0x5290cb(0x115)]};},startDraw=_0x4cbb07=>{const _0x5c8f68=_0x2c4436;_0x4cbb07[_0x5c8f68(0x100)]();const _0x3bb655=getPos(_0x4cbb07),_0x13cbe1=canvas['height'],_0x1367a5=Math[_0x5c8f68(0x123)](0x5a,_0x13cbe1/4.5),_0x1aacb6=_0x13cbe1/0x2+_0x1367a5/0x2,_0x3b46f3=letterConfig[currentLetter];if(_0x3b46f3){const _0x1d60e9=[...(_0x3b46f3[_0x5c8f68(0x106)]||[])[_0x5c8f68(0x10b)](_0x4f0f93=>({'x':_0x4f0f93['x']+canvas['width']/0x2-_0x1367a5*1.2,'y':_0x4f0f93['y']+_0x1aacb6})),...(_0x3b46f3['low']||[])[_0x5c8f68(0x10b)](_0xf9070d=>({'x':_0xf9070d['x']+canvas[_0x5c8f68(0xf9)]/0x2+_0x1367a5*1.2,'y':_0xf9070d['y']+_0x1aacb6}))],_0x28242c=_0x1d60e9[currentPointIndex];if(_0x28242c){if(Math[_0x5c8f68(0xf8)](_0x3bb655['x']-_0x28242c['x'],_0x3bb655['y']-_0x28242c['y'])<0x2d){isDrawing=!![],hasDrawn=!![],currentPointIndex++,renderPoints();canvas[_0x5c8f68(0x116)]&&_0x4cbb07[_0x5c8f68(0x103)]&&canvas[_0x5c8f68(0x116)](_0x4cbb07[_0x5c8f68(0x103)]);ctx[_0x5c8f68(0xf1)](),ctx[_0x5c8f68(0xde)](_0x3bb655['x'],_0x3bb655['y']);return;}}showToast(_0x5c8f68(0x118)+(currentPointIndex+0x1)+'!\x20✨'),isDrawing=![];}else isDrawing=!![],canvas['setPointerCapture']&&_0x4cbb07[_0x5c8f68(0x103)]&&canvas[_0x5c8f68(0x116)](_0x4cbb07[_0x5c8f68(0x103)]),ctx[_0x5c8f68(0xf1)](),ctx[_0x5c8f68(0xde)](_0x3bb655['x'],_0x3bb655['y']);},moveDraw=_0x27a1de=>{const _0x2e8773=_0x2c4436;if(!isDrawing)return;_0x27a1de[_0x2e8773(0x100)]();const _0xe311a4=getPos(_0x27a1de);ctx[_0x2e8773(0xfa)](_0xe311a4['x'],_0xe311a4['y']),ctx[_0x2e8773(0xda)]=_0x2e8773(0x113),ctx[_0x2e8773(0x102)]=0xa,ctx[_0x2e8773(0x125)]=_0x2e8773(0x120),ctx[_0x2e8773(0xd6)]=_0x2e8773(0x120),ctx['stroke']();},endDraw=_0x53e352=>{const _0x279bbe=_0x2c4436;if(!isDrawing)return;isDrawing=![];if(canvas[_0x279bbe(0xe1)]&&_0x53e352[_0x279bbe(0x103)])try{canvas['releasePointerCapture'](_0x53e352[_0x279bbe(0x103)]);}catch(_0xd6eece){}};function checkScore(){const _0x1ba4b0=_0x2c4436;if(hCan[_0x1ba4b0(0xf9)]!==canvas[_0x1ba4b0(0xf9)]||hCan[_0x1ba4b0(0xdd)]!==canvas[_0x1ba4b0(0xdd)]){const _0x2d1cd1=canvas['height'],_0x1f5ac5=Math[_0x1ba4b0(0x123)](0x5a,_0x2d1cd1/4.5),_0xe13a07=_0x2d1cd1/0x2+_0x1f5ac5/0x2;drawHiddenTarget(canvas[_0x1ba4b0(0xf9)],canvas['height'],_0x1f5ac5,_0xe13a07);}const _0x5539e6=ctx['getImageData'](0x0,0x0,canvas[_0x1ba4b0(0xf9)],canvas[_0x1ba4b0(0xdd)])[_0x1ba4b0(0xcf)],_0x149e8b=hCtx[_0x1ba4b0(0xed)](0x0,0x0,hCan[_0x1ba4b0(0xf9)],hCan[_0x1ba4b0(0xdd)])[_0x1ba4b0(0xcf)];let _0x5a1fb7=0x0,_0xcf3596=0x0;for(let _0x3d7c4e=0x0;_0x3d7c4e<_0x5539e6[_0x1ba4b0(0x10d)];_0x3d7c4e+=0x4){const _0x580984=_0x149e8b[_0x3d7c4e+0x3]>0x1e,_0x5dd05a=_0x5539e6[_0x3d7c4e+0x3]>0x1e;_0x580984&&(_0x5a1fb7++,_0x5dd05a&&_0xcf3596++);}if(_0x5a1fb7===0x0){document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xca))[_0x1ba4b0(0x10a)]='0%',document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xca))[_0x1ba4b0(0xd4)][_0x1ba4b0(0xfd)]=_0x1ba4b0(0xe0),document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xff))[_0x1ba4b0(0xd4)][_0x1ba4b0(0xeb)]='flex';return;}let _0x130579=_0xcf3596/_0x5a1fb7,_0x2bf60d=Math[_0x1ba4b0(0x120)](_0x130579*0x6e+0x19);if(_0x130579>0.25)_0x2bf60d=Math[_0x1ba4b0(0xf5)](_0x2bf60d,Math[_0x1ba4b0(0x123)](0x64,Math[_0x1ba4b0(0x120)](0x4b+_0x130579*0x23)));else _0x130579>0.05?_0x2bf60d=Math[_0x1ba4b0(0xf5)](_0x2bf60d,0x41):_0x2bf60d=0x28;_0x2bf60d=Math['max'](0x28,Math[_0x1ba4b0(0x123)](0x64,_0x2bf60d));let _0x246210=_0x1ba4b0(0xea);if(_0x2bf60d<0x4b)_0x246210=_0x1ba4b0(0xe9);document[_0x1ba4b0(0xf3)]('score-display')[_0x1ba4b0(0x10a)]=_0x2bf60d+'%',document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xff))[_0x1ba4b0(0xcb)]('h2')[_0x1ba4b0(0x10a)]=_0x246210,document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xca))[_0x1ba4b0(0xd4)][_0x1ba4b0(0xfd)]=_0x2bf60d>=0x4b?_0x1ba4b0(0x117):_0x1ba4b0(0x108),document[_0x1ba4b0(0xf3)](_0x1ba4b0(0xff))[_0x1ba4b0(0xd4)]['display']='flex';}function retryLetter(){const _0x124939=_0x2c4436;document[_0x124939(0xf3)](_0x124939(0xff))[_0x124939(0xd4)][_0x124939(0xeb)]=_0x124939(0xf6),drawScene();}canvas[_0x2c4436(0xd5)](_0x2c4436(0xec),startDraw),canvas[_0x2c4436(0xd5)](_0x2c4436(0xd3),moveDraw),canvas['addEventListener'](_0x2c4436(0xc5),endDraw),canvas[_0x2c4436(0xd5)](_0x2c4436(0xc9),endDraw),window['onload']=initAlphabet;
+    const alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЮЯ".split('');
+    let currentLetter = 'А';
+    let isDrawing = false;
+    let hasDrawn = false;
+    let currentPointIndex = 0; 
+    
+    const canvas = document.getElementById('main-canvas');
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
+    
+    const userCanvas = document.createElement('canvas');
+    const userCtx = userCanvas.getContext('2d', {willReadFrequently: true});
+
+    const hCan = document.getElementById('hidden-canvas');
+    const hCtx = hCan.getContext('2d', {willReadFrequently: true});
+
+    const letterConfig = {
+        'А': { cap: [{x:-94, y:-11}, {x:-36, y:-96}], low: [{x:6, y:-62}] },
+        'Б': { cap: [{x:16, y:-156}, {x:-6, y:-92}, {x:-40, y:-125}], low: [{x:11, y:-68}] },
+        'В': { cap: [{x:16, y:-168}, {x:-31, y:-125}], low: [{x:-24, y:-39}] },
+        'Г': { cap: [{x:24, y:-167}, {x:-30, y:-122}], low: [{x:-27, y:-39}] },
+        'Д': { cap: [{x:24, y:-168}], low: [{x:11, y:-62}] },
+        'Е': { cap: [{x:52, y:-173}], low: [{x:-31, y:-33}] },
+        'Ж': { cap: [{x:-96, y:-136}, {x:-38, y:-85}, {x:118, y:-175}], low: [{x:-63, y:-44}, {x:-20, y:-37}, {x:44, y:-62}] },
+        'З': { cap: [{x:-28, y:-173}], low: [{x:-33, y:-40}] },
+        'И': { cap: [{x:-77, y:-128}, {x:64, y:-196}], low: [{x:-43, y:-41}, {x:18, y:-76}] },
+        'Й': { cap: [{x:-77, y:-128}, {x:64, y:-196},{x:-9, y:-210}], low: [{x:-43, y:-41}, {x:18, y:-76}, {x:-14, y:-91}] },
+        'К': { cap: [{x:-73, y:-176}, {x:92, y:-188}], low: [{x:-40, y:-43}, {x:-6, y:-32}] },
+        'Л': { cap: [{x:-73, y:-52}], low: [{x:-39, y:-38}] },
+        'М': { cap: [{x:-104, y:-48}], low: [{x:-41, y:-34}] },
+        'Н': { cap: [{x:-72, y:-180}, {x:-10, y:-109}, {x:78, y:-199}], low: [{x:-42, y:-40}, {x:-14, y:-43}, {x:19, y:-73}] },
+        'О': { cap: [{x:10, y:-193}], low: [{x:8, y:-75}] },
+        'П': { cap: [{x:-4, y:-160}, {x:65, y:-160}, {x:-54, y:-124}], low: [{x:-32, y:-41}, {x:-11, y:-42}] },
+        'Р': { cap: [{x:20, y:-168},{x:-23, y:-106}], low: [{x:-42, y:-43},{x:-22, y:-39}] },
+        'С': { cap: [{x:28, y:-140}], low: [{x:9, y:-61}] },
+        'Т': { cap: [{x:-22, y:-162}, {x:33, y:-160}, {x:88, y:-164}, {x:-70, y:-124}], low: [{x:-56, y:-38}, {x:-28, y:-40}, {x:12, y:-42}] },
+        'У': { cap: [{x:-63, y:-122}], low: [{x:-42, y:-44}] },
+       'Ф': { 
+    cap: [{x: -45, y: -228}, {x: -12, y: -191}, {x: 38, y: -191}], 
+    low: [{x: 24, y: -159}, {x: -8, y: -68}, {x: 32, y: -68}] 
+},
+        'Х': { cap: [{x:-62, y:-129}, {x:91, y:-172}], low: [{x:-44, y:-44}, {x:24, y:-62}] },
+        'Ц': { cap: [{x:-90, y:-125}], low: [{x:-50, y:-42.3}] },
+        'Ч': { cap: [{x:-73, y:-121}], low: [{x:-36, y:-38}] },
+        'Ш': { cap: [{x:-116, y:-125}], low: [{x:-58, y:-43}] },
+        'Щ': { cap: [{x:-119, y:-128}], low: [{x:-56, y:-45}] },
+        'Ъ': { cap: [{x:-73, y:-180}], low: [{x:-36, y:-42}] },
+        'Ь': { cap: [{x:-17, y:-198}], low: [{x:-24, y:-43}] },
+        'Ю': { cap: [{x:-78, y:-172},{x:-35, y:-108}, {x:64, y:-176}], low: [{x:-43, y:-62},{x:-15, y:-39}, {x:28, y:-68}] },
+        'Я': { cap: [{x:-74, y:-46}], low: [{x:-36, y:-31}] }
+    };
+
+    function initAlphabet() {
+        const grid = document.getElementById('alphabet-grid');
+        grid.innerHTML = "";
+        alphabet.forEach(letter => {
+            const card = document.createElement('div');
+            card.className = 'letter-card';
+            card.innerText = letter;
+            card.onclick = () => selectLetter(letter);
+            grid.appendChild(card);
+        });
+
+        const strictInput = document.getElementById('strictness');
+        const strictVal = document.getElementById('strictness-value');
+        if (strictInput && strictVal) {
+            strictInput.addEventListener('input', (e) => {
+                strictVal.innerText = e.target.value + " / 10";
+            });
+        }
+    }
+
+    function selectLetter(letter) {
+        currentLetter = letter;
+        document.getElementById('top-letter').innerText = letter + letter.toLowerCase();
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'flex';
+        setTimeout(drawScene, 100);
+    }
+
+    function showAlphabet() {
+        document.getElementById('app-screen').style.display = 'none';
+        document.getElementById('result-overlay').style.display = 'none';
+        document.getElementById('start-screen').style.display = 'flex';
+    }
+
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:rgba(231,76,60,0.95); color:white; padding:12px 24px; border-radius:25px; font-weight:bold; z-index:4000; transition:opacity 0.3s; pointer-events:none; box-shadow:0 4px 15px rgba(0,0,0,0.2);';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = msg;
+        toast.style.opacity = '1';
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+
+    function syncCanvasSizes() {
+        const w = canvas.parentElement.clientWidth;
+        const h = canvas.parentElement.clientHeight;
+        canvas.width = w;
+        canvas.height = h;
+        userCanvas.width = w;
+        userCanvas.height = h;
+        hCan.width = w;
+        hCan.height = h;
+    }
+
+    function drawScene() {
+        hasDrawn = false;
+        currentPointIndex = 0; 
+        
+        syncCanvasSizes();
+
+        const w = canvas.width, h = canvas.height, mid = h/2;
+        const rowH = Math.min(90, h / 4.5), baseLine = mid + rowH/2;
+
+        ctx.clearRect(0, 0, w, h);
+        userCtx.clearRect(0, 0, w, h);
+
+        ctx.strokeStyle = "#74b9ff"; ctx.lineWidth = 2;
+        [mid - rowH*1.5, mid - rowH/2, mid + rowH/2, mid + rowH*1.5].forEach(y => {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        });
+
+        const drawTemplate = (txt, x, size) => {
+            ctx.font = size + "px 'BoyanMaga'";
+            ctx.fillStyle = "#f4f6f8"; ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+            ctx.fillText(txt, x, baseLine - 3);
+            ctx.strokeStyle = "#a5b1c2"; ctx.setLineDash([8, 5]); ctx.strokeText(txt, x, baseLine - 3);
+            ctx.setLineDash([]);
+        };
+
+        drawTemplate(currentLetter, w/2 - rowH*1.2, rowH * 2.0);
+        drawTemplate(currentLetter.toLowerCase(), w/2 + rowH*1.2, rowH * 1.5);
+
+        renderPoints();
+        drawHiddenTarget(w, h, rowH, baseLine);
+    }
+
+    function renderPoints() {
+        const h = canvas.height, rowH = Math.min(90, h / 4.5), baseLine = (h/2) + rowH/2;
+        const conf = letterConfig[currentLetter];
+        if (!conf) return;
+
+        const drawPts = (pts, bx, offset) => {
+            pts?.forEach((pt, i) => {
+                const globalIdx = i + offset;
+                ctx.fillStyle = globalIdx < currentPointIndex ? "#2ecc71" : "orange"; 
+                ctx.beginPath(); 
+                ctx.arc(bx + pt.x, baseLine + pt.y, 12, 0, Math.PI*2); 
+                ctx.fill();
+                ctx.fillStyle = "white"; ctx.font = "bold 12px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText(i + 1, bx + pt.x, baseLine + pt.y);
+            });
+        };
+        const capLen = letterConfig[currentLetter].cap ? letterConfig[currentLetter].cap.length : 0;
+        drawPts(conf.cap, canvas.width/2 - rowH*1.2, 0);
+        drawPts(conf.low, canvas.width/2 + rowH*1.2, capLen);
+    }
+
+    function drawHiddenTarget(w, h, rowH, baseLine) {
+        hCan.width = w; 
+        hCan.height = h;
+        hCtx.clearRect(0, 0, w, h);
+        hCtx.textAlign = "center"; 
+        hCtx.textBaseline = "alphabetic";
+        
+        const strictness = parseInt(document.getElementById('strictness').value) || 5;
+        const targetLineWidth = Math.max(18, 46 - (strictness - 1) * 2.88);
+        
+        hCtx.lineWidth = targetLineWidth; 
+        hCtx.strokeStyle = "rgba(0, 0, 0, 1)"; 
+        hCtx.lineCap = "round";
+        hCtx.lineJoin = "round";
+        
+        hCtx.font = (rowH * 2.0) + "px 'BoyanMaga'";
+        hCtx.strokeText(currentLetter, w/2 - rowH*1.2, baseLine - 3);
+        
+        hCtx.font = (rowH * 1.5) + "px 'BoyanMaga'";
+        hCtx.strokeText(currentLetter.toLowerCase(), w/2 + rowH*1.2, baseLine - 3);
+    }
+
+    const getPos = (e) => {
+        const r = canvas.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+
+    const startDraw = (e) => {
+        e.preventDefault();
+        const p = getPos(e);
+        const h = canvas.height, rowH = Math.min(90, h / 4.5), baseLine = (h/2) + rowH/2;
+        const conf = letterConfig[currentLetter];
+        
+        if(conf) {
+            const allPoints = [
+                ...(conf.cap || []).map(pt => ({x: pt.x + canvas.width/2 - rowH*1.2, y: pt.y + baseLine})),
+                ...(conf.low || []).map(pt => ({x: pt.x + canvas.width/2 + rowH*1.2, y: pt.y + baseLine}))
+            ];
+
+            const targetPt = allPoints[currentPointIndex];
+            if (targetPt) {
+                if (Math.hypot(p.x - targetPt.x, p.y - targetPt.y) < 45) {
+                    isDrawing = true; 
+                    hasDrawn = true;
+                    currentPointIndex++;
+                    renderPoints();
+                    
+                    if (canvas.setPointerCapture && e.pointerId) {
+                        canvas.setPointerCapture(e.pointerId);
+                    }
+
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y);
+                    userCtx.beginPath(); userCtx.moveTo(p.x, p.y);
+                    return;
+                }
+            }
+            showToast(`ЗАПОЧНИ ОТ ТОЧКА ${currentPointIndex + 1}! ✨`);
+            isDrawing = false;
+        } else {
+            isDrawing = true; 
+            hasDrawn = true;
+            if (canvas.setPointerCapture && e.pointerId) {
+                canvas.setPointerCapture(e.pointerId);
+            }
+            ctx.beginPath(); ctx.moveTo(p.x, p.y);
+            userCtx.beginPath(); userCtx.moveTo(p.x, p.y);
+        }
+    };
+
+    const moveDraw = (e) => {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const p = getPos(e);
+        
+        ctx.lineTo(p.x, p.y); 
+        ctx.strokeStyle = "#2c3e50"; 
+        ctx.lineWidth = 10; 
+        ctx.lineCap = "round"; 
+        ctx.lineJoin = "round";
+        ctx.stroke();
+
+        userCtx.lineTo(p.x, p.y); 
+        userCtx.strokeStyle = "#2c3e50"; 
+        userCtx.lineWidth = 10; 
+        userCtx.lineCap = "round"; 
+        userCtx.lineJoin = "round";
+        userCtx.stroke();
+    };
+
+    const endDraw = (e) => {
+        if (!isDrawing) return;
+        isDrawing = false;
+        if (canvas.releasePointerCapture && e.pointerId) {
+            try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+        }
+    };
+
+    function checkScore() {
+        const strictness = parseInt(document.getElementById('strictness').value) || 5;
+        const h = canvas.height, rowH = Math.min(90, h / 4.5), baseLine = (h/2) + rowH/2;
+        
+        drawHiddenTarget(canvas.width, canvas.height, rowH, baseLine);
+
+        const uData = userCtx.getImageData(0, 0, userCanvas.width, userCanvas.height).data;
+        const tData = hCtx.getImageData(0, 0, hCan.width, hCan.height).data;
+        
+        let targetPx = 0;
+        let userPx = 0;
+        let hits = 0;
+
+        for (let i = 0; i < uData.length; i += 4) {
+            const isTarget = tData[i + 3] > 30;   
+            const isUser = uData[i + 3] > 30;     
+
+            if (isTarget) targetPx++;
+            if (isUser) userPx++;
+            if (isTarget && isUser) hits++;
+        }
+
+        if (userPx === 0) {
+            document.getElementById('score-display').innerText = "0%";
+            document.getElementById('score-display').style.background = "var(--red)";
+            document.getElementById('result-msg').innerText = "Не е изписано нищо! Започни от точка 1. ✏️";
+            document.getElementById('result-overlay').style.display = 'flex';
+            return;
+        }
+
+        const coverage = targetPx > 0 ? hits / targetPx : 0; 
+        const precision = userPx > 0 ? hits / userPx : 0;   
+
+        const effectiveCoverage = Math.min(1.0, coverage / 0.60);
+
+        let baseScore = 0;
+
+        if (precision < 0.20) {
+            baseScore = effectiveCoverage * (precision * 2.5);
+        } else {
+            baseScore = Math.pow(effectiveCoverage, 0.6) * Math.pow(precision, 0.8);
+        }
+
+        if (effectiveCoverage < 0.25) {
+            baseScore *= (effectiveCoverage / 0.25);
+        }
+
+        const exp = 0.8 + (strictness - 1) * 0.061;
+        let finalScore = Math.round(Math.pow(baseScore, exp) * 100);
+        finalScore = Math.max(0, Math.min(100, finalScore));
+
+        let displayMsg = "Браво! Отлично справяне! ✨";
+        if (finalScore < 40) {
+            displayMsg = "Опитай отново! Изпиши цялата буква по очертанията. 💪";
+        } else if (finalScore < 75) {
+            displayMsg = "Добра работа! Опитай да бъдеш още по-прецизен! ✏️";
+        } else if (finalScore < 90) {
+            displayMsg = "Много добре! Почти отлично справяне! 🌟";
+        }
+
+        document.getElementById('score-display').innerText = finalScore + "%";
+        document.getElementById('result-msg').innerText = displayMsg;
+        document.getElementById('score-display').style.background = finalScore >= 75 ? "var(--green)" : (finalScore >= 40 ? "var(--orange)" : "var(--red)");
+        document.getElementById('result-overlay').style.display = 'flex';
+    }
+
+    function retryLetter() { 
+        document.getElementById('result-overlay').style.display = 'none'; 
+        drawScene(); 
+    }
+
+    canvas.addEventListener('pointerdown', startDraw);
+    canvas.addEventListener('pointermove', moveDraw);
+    canvas.addEventListener('pointerup', endDraw);
+    canvas.addEventListener('pointercancel', endDraw);
+    window.addEventListener('resize', drawScene);
+
+    window.onload = initAlphabet;
 </script>
 </body>
 </html>
